@@ -7,6 +7,11 @@ bool commandComplete = false;
 #define brake3 4
 #define brake4 5
 
+#define cbrake1 6
+#define cbrake2 7
+#define cbrake3 8
+#define cbrake4 9
+
 
 
 void setup() 
@@ -18,11 +23,20 @@ void setup()
   pinMode(brake2, OUTPUT); //Slider Brake 2
   pinMode(brake3, OUTPUT); //Slider Brake 3
   pinMode(brake4, OUTPUT); //Slider Brake 4
+  
+  pinMode(cbrake1, OUTPUT); //cable Brake 1
+  pinMode(cbrake2, OUTPUT); //cable Brake 2
+  pinMode(cbrake3, OUTPUT); //cable Brake 3
+  pinMode(cbrake4, OUTPUT); //cable Brake 4
 
   digitalWrite(brake1, LOW);
   digitalWrite(brake2, LOW);
   digitalWrite(brake3, LOW);
   digitalWrite(brake4, LOW);
+  digitalWrite(cbrake1, LOW);
+  digitalWrite(cbrake2, LOW);
+  digitalWrite(cbrake3, LOW);
+  digitalWrite(cbrake4, LOW);
   Serial.println("Arduino Nano Setup OK");
   
 }
@@ -46,6 +60,21 @@ void loop()
       case 3:   //(3:0)
         digitalWrite(brake4, HIGH);
         break;
+        
+       // Cable brake open command
+      case 4:   
+        digitalWrite(cbrake1, HIGH); 
+        break;
+      case 5:   //
+        digitalWrite(cbrake2, HIGH);
+        break;
+      case 6:   //
+        digitalWrite(cbrake3, HIGH);
+        break;
+      case 7:   //
+        digitalWrite(cbrake4, HIGH);
+        break;
+        
       //Brake Close command: brake1close, brake2close, brake3close, brake4close, brakeall
       case 10:   //(0:1)
         digitalWrite(brake1, LOW);
@@ -63,6 +92,29 @@ void loop()
         digitalWrite(brake4, LOW);
         commandComplete = checkStatus(brake4);
         break;
+        
+        // Cable brake Close command
+
+      case 15:   
+        digitalWrite(cbrake1, LOW);
+        commandComplete = checkStatus(cbrake1);
+        break;
+      case 16:   
+        digitalWrite(cbrake2, LOW);
+        commandComplete = checkStatus(cbrake2);
+        break;
+      case 17:   
+        digitalWrite(cbrake3, LOW);
+        commandComplete = checkStatus(cbrake3);
+        break;
+      case 18:   
+        digitalWrite(cbrake4, LOW);
+        commandComplete = checkStatus(cbrake4);
+        break;        
+        
+        
+        
+        // close all the slider brake
       case 14:   //(4:1) // first digit 4, implies all 4 brakes
         digitalWrite(brake1, LOW);
         digitalWrite(brake2, LOW);
@@ -73,6 +125,20 @@ void loop()
           commandComplete = true;
         }
         break;
+        
+        //close all the cable brake
+      case 19:   
+        digitalWrite(cbrake1, LOW);
+        digitalWrite(cbrake2, LOW);
+        digitalWrite(cbrake3, LOW);
+        digitalWrite(cbrake4, LOW);
+        if(checkStatus(cbrake1) && checkStatus(cbrake2) && checkStatus(cbrake3) && checkStatus(cbrake4))
+        {
+          commandComplete = true;
+        }
+        break;
+        
+        
       default:
         Serial.print("Invalid input: ");
         Serial.println(inputString);
